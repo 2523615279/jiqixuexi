@@ -21,22 +21,20 @@ def drawing():
 
 
 def neuron(x):
-    global weigts, bias
-    y = []
-    for i in range(len(x)):
-        y.append(weigts * x[i] + bias)
-    return y
+    return weigts * x + bias
 
 
-def calcMSE(input1, input2):
+def calcMSE():
+    house_expected = [neuron(item) for item in house_size]
+    return sum([pow(house_expected[i] - house_size[i], 2) for i in range(0, len(house_size))]) / (2 * (len(house_size)))
 
-    return sum([pow(input1[i] - input2[i], 2) for i in range(0, len(input1))]) / (2 * (len(input1)))
 
-
-def gengxin(x):
+def gengxin():
     global weigts, bias, n
-    cost_w = sum([((weigts * x[i] + bias) * x[i]) for i in range(0, len(x))]) / (len(x))
-    cost_b = sum([(weigts * x[i] + bias) for i in range(0, len(x))]) / (len(x))
+    # cost_w = sum([((weigts * x[i] + bias) * x[i]) for i in range(0, len(x))]) / (len(x))
+    # cost_b = sum([(weigts * x[i] + bias) for i in range(0, len(x))]) / (len(x))
+    cost_w = sum((neuron(house_size[i]) - house_price[i]) * house_price[i] for i in range(0, len(house_size))) / len(house_size)
+    cost_b = sum((neuron(house_size[i]) - house_price[i]) for i in range(0, len(house_size))) / len(house_size)
     w = weigts - cost_w * n
     b = bias - cost_b * n
     weigts = w
@@ -49,9 +47,8 @@ def gengxin(x):
 if __name__ == '__main__':
     drawing()
     for i in range(1):
-        w, b = gengxin(house_size)
-        house_expected = neuron(house_size)
-        cost = calcMSE(house_expected, house_price)
+        w, b = gengxin()
+        cost = calcMSE()
     y = neuron(house_size)
     print(weigts, bias)
     print(y)
